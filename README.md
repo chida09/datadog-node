@@ -1,6 +1,7 @@
 ## 起動
 ```
-docker container run 3333:8080 -d datadog-node/node-web-app
+dc up -d
+open http://localhost:3333/
 ```
 
 ## 参考
