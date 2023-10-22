@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 
 services:
   node-web-app:
@@ -9,3 +9,25 @@ services:
       - '3333:8080'
     volumes:
       - ./:/usr/src/app
+  datadog:
+    # NOTE:
+    # https://docs.datadoghq.com/ja/containers/docker/apm/?tab=linux
+    # https://ap1.datadoghq.com/account/settings/agent/latest?platform=docker
+    image: datadog/agent:latest
+    restart: always
+    ports:
+      - '8126:8126'
+      - '8125:8125'
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_LOGS_ENABLED=true
+      - DD_APM_ENABLED=true
+      - SD_BACKEND=docker
+      - DD_ENV=dev
+      # NOTE: https://github.com/DataDog/datadog-agent/issues/5978
+      - DD_AC_EXCLUDE=name:redis
+      - DD_SITE=ap1.datadoghq.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
